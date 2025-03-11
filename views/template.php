@@ -17,6 +17,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+	
+	<!--===============================================================
+	CUSTOM JS SERVER
+	=================================================================-->
+
+	<script src="/views/assets/js/alerts/alerts.js"></script>
+
     <!--================================================================
     PLUGGIN CSS
     ===================================================================-->
