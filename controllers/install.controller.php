@@ -38,6 +38,10 @@
 
         public function install(){
             if (isset($_POST["email_admin"])){
+                echo '<script>
+                                 fncMatPreloader("on")
+                                fncSweetAlert("success","La instalación se realizó exitosamente","")
+                      </script>';
                 /*===============================================================
                 Creamos la Tabla admins
                 =================================================================*/
@@ -116,10 +120,33 @@
                  $stmtModules->execute() &&
                  $stmtColumns->execute()
                  ){
-                    echo '<script>
-                         fncMatPreloader("on")
-                        fncSweetAlert("success","Tablas creadas exitosamente","")
-                    </script>';
+                    /*===============================================================
+                    Creamos el super administrador
+                    =================================================================*/
+                    $url="admins?register=true&suffix=admin";
+                    $method="POST";
+                    $fields = array(
+                        "rol_admin" => "superadmin",
+                        "permissions_admin" => '{"todo":"on"}',
+                        "email_admin" => trim($_POST["email_admin"]),
+                        "password_admin" => trim($_POST["password_admin"]),
+                        "title_admin" => trim($_POST["title_admin"]),
+                        "symbol_admin" => trim($_POST["symbol_admin"]),
+                        "font_admin" => trim($_POST["font_admin"]),
+                        "color_admin" => trim($_POST["color_admin"]),
+                        "back_admin" => trim($_POST["back_admin"]),
+                        "date_created_admin" => date("Y-m-d")
+                    );
+                    $register=CurlController::request($url,$method,$fields);
+                    if($register->status==200){
+                        
+                        echo '<script>
+                                 fncMatPreloader("off")
+                                 fncFormatInputs()
+                                fncSweetAlert("success","La instalación se realizó exitosamente","")
+                             </script>';
+                    }
+                   
                  }
             }
            
