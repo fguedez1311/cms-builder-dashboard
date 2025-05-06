@@ -24,3 +24,13 @@ a:link,a:visited,a:hover,a:active{
     border-bottom-left-radius: 8px !important ; 
     border-bottom-right-radius: 8px !important;
 }
+.backgroundImage{
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+
+
+}
