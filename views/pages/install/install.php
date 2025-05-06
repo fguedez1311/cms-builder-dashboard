@@ -1,6 +1,6 @@
 <div class="container-fluid">
-    <div class="d-flex flex-wrap justify-content-center align-content-center">
-        <div class="card border-0 rounded shadow p-5">
+    <div class="d-flex flex-wrap justify-content-center align-items-center vh-100">
+        <div class="card border-0 rounded shadow p-3" style="max-width: 500px; width: 100%;">
             <form method="POST" class="needs-validation" novalidate>
                 <h3 class="pt-3 text-center">Instalación Dashboard</h3>
                 <hr>

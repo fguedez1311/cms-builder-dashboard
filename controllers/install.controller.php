@@ -40,6 +40,7 @@
             if (isset($_POST["email_admin"])){
                 echo '<script>
                                  fncMatPreloader("on")
+                                 fncSweetAlert("loading","Instalando...","")
                                 fncSweetAlert("success","La instalación se realizó exitosamente","")
                       </script>';
                 /*===============================================================
@@ -138,13 +139,225 @@
                         "date_created_admin" => date("Y-m-d")
                     );
                     $register=CurlController::request($url,$method,$fields);
-                    if($register->status==200){
+                    /*===============================================================
+                    Creamos la página de inicio
+                    =================================================================*/
+                    $url="pages?token=no&except=id_page";
+                    $method="POST";
+                    $fields = array(
+                        "title_page" => "Inicio",
+                        "url_page" => "inicio",
+                        "icon_page" => "bi bi-house-door-fill",
+                        "type_page" => "modules",
+                        "order_page" => "1",
+                        "date_created_page" => date("Y-m-d")
+                    );
+                    $homePage=CurlController::request($url,$method,$fields);
+
+                    /*===============================================================
+                    Creamos la página de Administradores
+                    =================================================================*/
+                    $url="pages?token=no&except=id_page";
+                    $method="POST";
+                    $fields = array(
+                        "title_page" => "Admins",
+                        "url_page" => "admins",
+                        "icon_page" => "bi bi-person-fill-gear",
+                        "type_page" => "modules",
+                        "order_page" => "2",
+                        "date_created_page" => date("Y-m-d")
+                    );
+                    $adminPage=CurlController::request($url,$method,$fields);
+                     /*===============================================================
+                    Creamos el módulo Breadcrumb para la página de admninistradores
+                    =================================================================*/
+                    $url="modules?token=no&except=id_module";
+                    $method="POST";
+                    $fields=array(
+
+                        "id_page_module" => $adminPage->results->lastId,
+                        "type_module" => "breadcrumbs",
+                        "title_module" => "Administradores",
+                        "suffix_module" => "",
+                        "content_module" => "",
+                        "date_created_module" => date("Y-m-d")
                         
-                        echo '<script>
-                                 fncMatPreloader("off")
-                                 fncFormatInputs()
-                                fncSweetAlert("success","La instalación se realizó exitosamente","")
-                             </script>';
+                    );
+                    $breadCrumbModule=CurlController::request($url,$method,$fields);
+                       /*===============================================================
+                    Creamos el módulo Tabla para la página de admninistradores
+                    =================================================================*/
+                    $url="modules?token=no&except=id_module";
+                    $method="POST";
+                    $fields=array(
+
+                        "id_page_module" => $adminPage->results->lastId,
+                        "type_module" => "tables",
+                        "title_module" => "aadmins",
+                        "suffix_module" => "admin",
+                        "editable_module" => 0,
+                        "date_created_module" => date("Y-m-d")
+                        
+                    );
+                    $tableModule=CurlController::request($url,$method,$fields);
+
+
+                    if ($register->status==200 &&
+                        $homePage->status==200 && 
+                        $adminPage->status==200 &&
+                        $breadCrumbModule->status==200 &&
+                        $tableModule->status==200)
+                    {
+                        /*=============================================
+                        Creamos cada una de las columnas de la tabla de administradores
+                        =============================================*/
+
+                        $columns = array(
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "rol_admin",
+                                "alias_column" => "rol",
+                                "type_column" =>  "select",
+                                "matrix_column"  => "admin,editor",
+                                "visible_column" => 1,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "permissions_admin",
+                                "alias_column" => "permisos",
+                                "type_column" =>  "object",
+                                "matrix_column"  => "",
+                                "visible_column" => 1,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "email_admin",
+                                "alias_column" => "email",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 1,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "password_admin",
+                                "alias_column" => "pass",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "token_admin",
+                                "alias_column" => "token",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "token_exp_admin",
+                                "alias_column" => "expiración",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "status_admin",
+                                "alias_column" => "estado",
+                                "type_column" =>  "boolean",
+                                "matrix_column"  => "",
+                                "visible_column" => 1,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "title_admin",
+                                "alias_column" => "título",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "symbol_admin",
+                                "alias_column" => "simbolo",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "font_admin",
+                                "alias_column" => "tipografía",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "color_admin",
+                                "alias_column" => "color",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ],
+                            [	
+                                "id_module_column" => $tableModule->results->lastId,
+                                "title_column" =>  "back_admin",
+                                "alias_column" => "fondo",
+                                "type_column" =>  "text",
+                                "matrix_column"  => "",
+                                "visible_column" => 0,
+                                "date_created_column" => date("Y-m-d")
+                            ]
+                        );
+                        $countColumns = 0;
+
+                        foreach ($columns as $key => $value) {
+                            
+                            $url = "columns?token=no&except=id_column";
+                            $method = "POST";
+                            $fields = array(
+                                "id_module_column" => $value["id_module_column"],
+                                "title_column" =>  $value["title_column"],
+                                "alias_column" => $value["alias_column"],
+                                "type_column" =>  $value["type_column"],
+                                "matrix_column"  => $value["matrix_column"],
+                                "visible_column" => $value["visible_column"],
+                                "date_created_column" => $value["date_created_column"]
+                            );
+
+                            $createColumn = CurlController::request($url,$method,$fields);
+
+                            if($createColumn->status == 200){
+
+                                $countColumns++;
+
+                            }
+                                
+                        }
+                        if($countColumns == count($columns)){
+
+                            echo '<script>
+                            fncMatPreloader("off");
+                            fncFormatInputs();
+                            fncSweetAlert("success","La instalación se realizó exitosamente",setTimeout(()=>location.reload(),1250));
+                            </script>';
+    
+                        }	
+                        
+                       
                     }
                    
                  }

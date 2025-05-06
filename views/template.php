@@ -7,7 +7,19 @@
     foreach ($routesArray as $key => $value) {
         $routesArray[$key]=explode("?",$value)[0];
     }
-   
+	/*===============================================================
+	Validar si existe la Base de Datos con la tabla de admins
+	=================================================================*/
+   $url="admins";
+   $method="GET";
+   $fields=array();
+   $adminTable=CurlController::request($url,$method,$fields);	
+   if ($adminTable=="404"){
+		$admin=null;
+   }
+   else{
+		$admin=$adminTable->results[0];
+   }
    
 ?>
 
@@ -102,7 +114,13 @@
 </head>
 <body>
 	<?php
-		include "pages/install/install.php";
+		// if ($admin==null){
+
+		// 	include "pages/install/install.php";
+		// }else{
+		// 	include "pages/login/login.php";
+		// }
+		include "pages/install/install.php"
 	?>
     
     <!--================================================================
